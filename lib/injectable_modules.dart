@@ -3,11 +3,13 @@ import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:web_socket_channel/web_socket_channel.dart';
 
+import 'sqlite_schema.dart';
+
 @module
 abstract class SharedPreferencesService {
   @lazySingleton
   WebSocketChannel get chanel => WebSocketChannel.connect(
-        Uri.parse('wss://ws-feed.pro.coinbase.com'),
+        Uri.parse('wss://ws-feed.exchange.coinbase.com'),
       );
 }
 
@@ -18,7 +20,7 @@ abstract class SQLiteService {
         join(await getDatabasesPath(), 'doggie_db.db'),
         onCreate: (db, version) {
           return db.execute(
-            'CREATE TABLE dogs(id INTEGER PRIMARY KEY, name TEXT, age INTEGER)',
+            kSqlSchema,
           );
         },
         version: 1,
