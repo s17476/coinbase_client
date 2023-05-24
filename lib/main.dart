@@ -1,12 +1,18 @@
-import 'package:coinbase_client/features/coinbase/presentation/providers/exchange_rate_provider.dart';
-import 'package:coinbase_client/injection.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+
+import 'package:coinbase_client/features/coinbase/presentation/providers/exchange_rate_provider.dart';
+import 'package:coinbase_client/injection.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await configureDependencies();
   runApp(const MyApp());
+
+  final sing = Sing();
+  print(sing.color);
+  sing.color = Colors.black;
+  print(Sing().color);
 }
 
 class MyApp extends StatelessWidget {
@@ -18,6 +24,7 @@ class MyApp extends StatelessWidget {
       providers: [
         Provider(
           create: (context) => getIt<ExchangeRateProvider>(),
+          dispose: (context, value) => value.close(),
         ),
       ],
       child: MaterialApp(
@@ -47,15 +54,30 @@ class _MyHomePageState extends State<MyHomePage> {
         title: Text(widget.title),
       ),
       body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: const [
-            Text(
-              'You have pushed the button this many times:',
-            ),
-          ],
+        child: Text(
+          'You have pushed the button this many times:',
         ),
       ),
     );
   }
+}
+
+abstract class Animal {
+  Color get getColor => Colors.black;
+}
+
+class Bird with Animal {}
+
+extension GetInit on double {}
+
+class Sing {
+  static final Sing _instance = Sing._internal(Colors.amber);
+
+  Color color;
+
+  factory Sing() {
+    return _instance;
+  }
+
+  Sing._internal(this.color);
 }

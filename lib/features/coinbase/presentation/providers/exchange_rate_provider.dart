@@ -36,19 +36,24 @@ class ExchangeRateProvider extends ChangeNotifier {
     final failureOrMessageStream = await _coinbaseRepository.getMessageStream();
     await failureOrMessageStream.fold(
       (failure) async => _errorMessage = failure.message,
-      (messageStream) async => messageStream.listen((message) {
-        final Map<String, dynamic> map = jsonDecode(message as String);
-        // print(map['type']);
-        // if (map['type'] == ResponseType.subscriptions.name) {
-        //   print(map);
-        // }
-        if (map['type'] == ResponseType.status.name) {
-          updateCurrencies(map['currencies'] as List);
-        }
-        // print(map);
-      }),
+      (messageStream) async {
+        return messageStream.listen((message) {
+          final Map<String, dynamic> map = jsonDecode(message as String);
+          // print(map['type']);
+          // if (map['type'] == ResponseType.subscriptions.name) {
+          //   print(map);
+          // }
+          if (map['type'] == ResponseType.status.name) {
+            updateCurrencies(map['currencies'] as List);
+          }
+
+          // print(map);
+        });
+      },
     );
   }
+
+  void close() {}
 }
 
 void updateCurrencies(List maps) {
