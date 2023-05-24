@@ -11,7 +11,7 @@ class ExchangeRateProvider extends ChangeNotifier {
   final CoinbaseRepository _coinbaseRepository;
 
   bool _isLoading = true;
-  String _errorMessage = 'test 2';
+  String _errorMessage = '';
 
   ExchangeRateProvider(
     this._coinbaseRepository,
